@@ -14,6 +14,8 @@ function refreshWeather(response) {
   windElement.innerHTML = `${response.data.wind.speed}km/h`;
   iconElement.innerHTML = `<img src="${response.data.condition.icon_url}" class="weather-app-icon" />
   `;
+
+  getForecast(response.data.city);
 }
 
 function formatDate(date) {
@@ -60,12 +62,16 @@ function handleSearchSubmit(event) {
   searchCity(searchInput.value);
 }
 
-let searchFormElement = document.querySelector("#search-form");
-searchFormElement.addEventListener("submit", handleSearchSubmit);
+function getForecast(city) {
+  let apiKey = "d4t1a45e6o81a70ca05f6b5864ac8f43";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
+  axios(apiUrl).then(displayForecast);
+  console.log(apiUrl);
+}
 
-searchCity("Manchester");
+function displayForecast(response) {
+  console.log(response.data);
 
-function displayForecast() {
   let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
   let forecastHtml = "";
 
@@ -73,8 +79,7 @@ function displayForecast() {
     forecastHtml =
       forecastHtml +
       `
-      
-          <div class="weather-forecast-day">
+         <div class="weather-forecast-day">
             <div class="weather-forecast-date">${day}</div>
             <div class="weather-forecast-icon">☀️</div>
             <div class="weather-forecast-temperatures">
@@ -91,4 +96,9 @@ function displayForecast() {
   forecastElement.innerHTML = forecastHtml;
 }
 
-displayForecast();
+let searchFormElement = document.querySelector("#search-form");
+searchFormElement.addEventListener("submit", handleSearchSubmit);
+
+searchCity("Manchester");
+
+getForecast("Manchester");
